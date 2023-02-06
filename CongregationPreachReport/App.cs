@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SmallTool.Lib.Models.CongregationPreachReport;
+using SmallTool.Lib.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +12,29 @@ namespace CongregationPreachReport
     public class App
     {
         private readonly IConfiguration config;
+        private readonly CongregationPreachReportService cprService;
 
-        public App(IConfiguration config)
+        public App(IConfiguration config, CongregationPreachReportService cprService)
         {
             this.config = config;
+            this.cprService=cprService;
         }
 
         public void Run()
         {
-            Console.WriteLine("Hello World ");
-
+            Console.WriteLine("CongregationPreachReport");
             Console.WriteLine("ReleaseMode: " + config.GetValue<bool>("ReleaseMode"));
-
             Console.WriteLine("Directory: " + Directory.GetCurrentDirectory());
 
+            InputModel inputModel = new InputModel();
+            Console.Write("輸入目標年份: ");
+            inputModel.Year = Console.ReadLine();
+            Console.Write("輸入目標月份: ");
+            inputModel.Month = Console.ReadLine();
+
+            cprService.Start(inputModel);
+
+            Console.WriteLine("程式結束");
             Console.ReadLine();
         }
     }

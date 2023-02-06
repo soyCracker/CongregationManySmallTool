@@ -1,7 +1,7 @@
 ﻿using CongregationPreachReport;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using SmallTool.Lib.Services;
 using SmallTool.Lib.Utils;
 
 
@@ -13,9 +13,8 @@ envirUtil.InitEnvironment(configuration.GetValue<bool>("ReleaseMode"));
 var service = new ServiceCollection();
 // 2. 註冊服務
 service.AddTransient<App>();
-
-
 service.AddSingleton(configuration);
+service.AddScoped<CongregationPreachReportService>();
 
 // 建立依賴服務提供者
 var serviceProvider = service.BuildServiceProvider();
