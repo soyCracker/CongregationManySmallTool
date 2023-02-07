@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SmallTool.Lib.Models.CongregationPreachReport;
 using SmallTool.Lib.Services;
+using SmallTool.Lib.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +34,7 @@ namespace CongregationPreachReport
             Console.Write("輸入目標月份: ");
             inputModel.Month = Console.ReadLine();
 
+            //Console.WriteLine(inputModel.Month.GetMonthEngName());
             cprService.Start(inputModel);
 
             Console.WriteLine("程式結束");

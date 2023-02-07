@@ -10,7 +10,7 @@ namespace SmallTool.Lib.Models.CongregationPreachReport
     {
         public string Name { get; set; }
         public string Type { get; set; }
-        public string Publish { get; set; }
+        public string Distribution { get; set; }
         public string Video { get; set; }
         public string Hour { get; set; }
         public string Review { get; set; }
