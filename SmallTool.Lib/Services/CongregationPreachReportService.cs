@@ -121,7 +121,7 @@ namespace SmallTool.Lib.Services
         {
             foreach (var prModel in prModels)
             {
-                string pdfPath = GetManPdf(prModel.Name, prModel.Type, prModel.Team);
+                string pdfPath = GetManPdf(prModel, input.Year);
                 if (!string.IsNullOrEmpty(pdfPath))
                 {
                     using FileStream fs = new FileStream(pdfPath, FileMode.Open);
@@ -155,14 +155,15 @@ namespace SmallTool.Lib.Services
             }
         }
 
-        private string GetManPdf(string name, string type, string team)
+        private string GetManPdf(PreachReportModel prModel, string year)
         {
             var rootFolder = config.GetValue<string>("TargetRootFolder");
             var firstLayerFolder = Directory.GetDirectories(rootFolder)[0];
-            var pdfFolder = System.IO.Path.Combine(firstLayerFolder, team, type, name);
+            var pdfFolder = System.IO.Path.Combine(firstLayerFolder, prModel.Team, prModel.Type, prModel.Name);
             if (Directory.Exists(pdfFolder))
             {
-                var pdf = Directory.GetFiles(pdfFolder).Where(x => x.EndsWith(".pdf") && System.IO.Path.GetFileName(x).Length==11).Max();
+                var pdf = Directory.GetFiles(pdfFolder).Where(x => x.EndsWith(".pdf") && System.IO.Path.GetFileName(x).Length==11
+                            && x.Contains(year.Substring(2, 2))).Max();
                 if (!string.IsNullOrEmpty(pdf))
                 {
                     Console.WriteLine(".");
@@ -170,7 +171,7 @@ namespace SmallTool.Lib.Services
                     return pdf;
                 }
             }
-            Console.WriteLine(name + " 的PDF名稱怪怪的會跳過");
+            Console.WriteLine($"{prModel.Team} {prModel.Type} {prModel.Name} 的PDF名稱怪怪的會跳過");
             return "";
         }
 
@@ -181,6 +182,10 @@ namespace SmallTool.Lib.Services
             string? year2 = fields[config.GetValue<string>("PDF_Year") + "_2"].GetValueAsString();
             if (string.IsNullOrEmpty(year1) || year1 == input.Year)
             {
+                if (string.IsNullOrEmpty(year1))
+                {
+                    Console.WriteLine($"檢測到 {prModel.Name} 的PDF似乎是空白無輸入的PDF，已寫入資料但建議檢查一下({year1})");
+                }
                 pageNum = 1;
                 fields[config.GetValue<string>("PDF_Year")].SetFontAndSize(MyFont(), 12f).SetValue(input.Year);
             }
