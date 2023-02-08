@@ -227,7 +227,7 @@ namespace SmallTool.Lib.Services
         //itext 7.1.14修改字體功能正常
         public PdfFont MyFont()
         {
-            string path = System.IO.Path.Combine("Font", "TaipeiSansTCBeta-Regular.ttf");
+            string path = System.IO.Path.Combine(config.GetValue<string>("FontDir"), "TaipeiSansTCBeta-Regular.ttf");
             return PdfFontFactory.CreateFont(path, PdfEncodings.IDENTITY_H);
         }
     }
