@@ -15,7 +15,7 @@ namespace CongregationPreachReport
     {
         private readonly IConfiguration config;
         private readonly CongregationPreachReportService cprService;
-        private readonly string version = "1.0.20230207";
+        private readonly string version = "1.1";
 
         public App(IConfiguration config, CongregationPreachReportService cprService)
         {
