@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        Hello, @context.User.Identity?.Name!
+        <MudIconButton Icon="fa-solid fa-right-from-bracket" Color="Color.Inherit"
+                       OnClick="BeginLogOut">登出</MudIconButton>
+    </Authorized>
+    <NotAuthorized>
+        <MudIconButton Icon="fa-brands fa-windows" Color="Color.Inherit"
+                       Link="authentication/login">登入</MudIconButton>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public void BeginLogOut()
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+}

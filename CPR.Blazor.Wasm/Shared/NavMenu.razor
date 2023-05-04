@@ -1,0 +1,9 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<NavMenu> langLoc
+
+<MudPaper Width="250px" Class="py-3" Elevation="0">
+    <MudNavMenu Color="Color.Tertiary">
+        <MudNavLink Match="NavLinkMatch.All" Href="">@langLoc["NavIndex"]</MudNavLink>
+        <MudNavLink Href="setting">@langLoc["NavSetting"]</MudNavLink>
+    </MudNavMenu>
+</MudPaper>

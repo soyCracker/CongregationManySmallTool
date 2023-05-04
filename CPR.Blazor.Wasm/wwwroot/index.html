@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Yu_Blazor_Template</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="Yu_Blazor_Template.styles.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <!-- Brotli壓縮，好像要放最前面-->
+    <script src="lib/brotli/decode.min.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script src="_content/Microsoft.Authentication.WebAssembly.Msal/AuthenticationService.js"></script>
+    <!--  MudBlazor  -->
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <!--  Font Awesome  -->
+    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>
+
+    <script>
+        // 語系
+        window.blazorCulture = {
+            get: () => window.localStorage['BlazorCulture'],
+            set: (value) => window.localStorage['BlazorCulture'] = value
+        };
+    </script>
+
+    <script type="module">
+        // Brotli壓縮
+        Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                if (type !== 'dotnetjs' && location.hostname !== 'localhost') {
+                    return (async function () {
+                        const response = await fetch(defaultUri + '.br', { cache: 'no-cache' });
+                        if (!response.ok) {
+                            throw new Error(response.statusText);
+                        }
+                        const originalResponseBuffer = await response.arrayBuffer();
+                        const originalResponseArray = new Int8Array(originalResponseBuffer);
+                        const decompressedResponseArray = BrotliDecode(originalResponseArray);
+                        const contentType = type ===
+                            'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
+                        return new Response(decompressedResponseArray,
+                            { headers: { 'content-type': contentType } });
+                    })();
+                }
+            }
+        });
+    </script>
+
+    <!-- My JS -->
+    <script src="lib/ts_output/Hello.js"></script>
+</body>
+
+</html>

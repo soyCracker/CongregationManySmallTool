@@ -1,0 +1,15 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "strict": true, //採用嚴格模式  
+    "target": "ES6",
+    "outDir": "wwwroot/lib/ts_output"
+  },
+  "include": [
+    "TS/*"
+  ]
+}

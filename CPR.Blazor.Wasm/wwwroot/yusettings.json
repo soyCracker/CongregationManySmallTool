@@ -1,0 +1,7 @@
+{
+  "MsAuth": {
+    "ClientID": "your_ClientID",
+    "ClientSecret": "your_ClientSecret",
+    "TenantId": "your_TenantId"
+  }
+}
