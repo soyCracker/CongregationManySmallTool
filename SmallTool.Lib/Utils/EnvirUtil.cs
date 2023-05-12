@@ -13,7 +13,7 @@ namespace SmallTool.Lib.Utils
                 Console.WriteLine("work dir:" + Directory.GetCurrentDirectory() + "\n");
             }
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Console.OutputEncoding = Encoding.Unicode;
+            Console.OutputEncoding = Encoding.UTF8;
         }
 
         public string PrepareAndGetTempXlsx(string fileFolder)

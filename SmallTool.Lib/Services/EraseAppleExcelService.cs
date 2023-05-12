@@ -1,26 +1,23 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using Microsoft.Extensions.Configuration;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
-using NPOI.Util;
 using NPOI.XSSF.UserModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace SmallTool.Lib.Services
 {
     public class EraseAppleExcelService
     {
-        public EraseAppleExcelService()
-        {
+        private readonly IConfiguration config;
 
+        public EraseAppleExcelService(IConfiguration config)
+        {
+            this.config = config;
         }
 
-        public void Start(string source, string outputFolder)
+
+        public void Start()
         {
+            string source = GetXls("File");
             FileStream stream = new FileStream(source, FileMode.Open);
             using (stream)
             {
@@ -58,11 +55,26 @@ namespace SmallTool.Lib.Services
                     }
                 }
 
-                FileStream result = new FileStream(outputFolder + "/new.xlsx", FileMode.Create);
+                FileStream result = new FileStream(Path.Combine("Export", "new.xlsx"), FileMode.Create);
                 workbook.Write(result, false);
                 workbook.Close();
 
             }
+        }
+
+        private string GetXls(string fileFolder)
+        {
+            string[] files = Directory.GetFiles(fileFolder).Where(f => f.EndsWith(".xls") || f.EndsWith(".xlsx")).ToArray();
+            if (files.Length > 1)
+            {
+                //throw new MultipleXlsException();
+            }
+            else if (files.Length == 1)
+            {
+                string file = files[0];
+                return file;
+            }
+            return "";
         }
     }
 }

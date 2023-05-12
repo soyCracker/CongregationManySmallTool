@@ -2,26 +2,13 @@
 using iText.Forms.Fields;
 using iText.IO.Font;
 using iText.Kernel.Font;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Annot;
-using iText.Kernel.Pdf.Canvas;
-using iText.Layout;
-using iText.Layout.Element;
-using MathNet.Numerics.Distributions;
 using Microsoft.Extensions.Configuration;
-using NPOI.HSSF.EventUserModel.DummyRecord;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SmallTool.Lib.Models.CongregationPreachReport;
 using SmallTool.Lib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static NPOI.HSSF.Util.HSSFColor;
 
 namespace SmallTool.Lib.Services
 {
