@@ -29,6 +29,7 @@ namespace SmallTool.Lib.Services
             WriteToEveryonePdf(preachReportModels, input);
         }
 
+        //取得全會眾傳道報告檔案
         private string GetCongregationXls(string year)
         {
             var rootFolder = config.GetValue<string>("TargetRootFolder");
@@ -40,6 +41,7 @@ namespace SmallTool.Lib.Services
             return xls;
         }
 
+        //讀取所有人的報告
         private List<PreachReportModel> ReadAllPreachReport(string xls, string month)
         {
             using FileStream stream = new FileStream(xls, FileMode.Open);
@@ -58,52 +60,63 @@ namespace SmallTool.Lib.Services
             }
             ISheet sheet = workbook.GetSheet(month + "月");
 
-            List<PreachReportModel> preachReportModels = new List<PreachReportModel>();
+            List<PreachReportModel> prModels = GetEveryoneBasicData();
             int startRow = config.GetValue<int>("CongregationXlsStartRow");
-            string currentTeam = "";
             for (int r = startRow; r<sheet.LastRowNum; r++)
             {
-                PreachReportModel prModel = new PreachReportModel();
-                prModel.Name = sheet.GetRow(r).GetCell(2).SafeTrim();
-                if (!string.IsNullOrEmpty(prModel.Name))
+                string tempName = sheet.GetRow(r).GetCell(2).SafeTrim();
+                if (!string.IsNullOrEmpty(tempName))
                 {
-                    string team = sheet.GetRow(r).GetCell(0).SafeTrim();
-                    prModel.Team = ChkTeam(team, currentTeam);
-                    currentTeam = prModel.Team;
-
-                    string type = sheet.GetRow(r).GetCell(1).SafeTrim();
-                    prModel.Type = type=="p" ? config.GetValue<string>("Pioneer") : config.GetValue<string>("Preacher");
-
-                    prModel.Distribution = sheet.GetRow(r).GetCell(3).SafeTrim();
-                    prModel.Video = sheet.GetRow(r).GetCell(4).SafeTrim();
-                    prModel.Hour = sheet.GetRow(r).GetCell(5).SafeTrim();
-                    prModel.Review = sheet.GetRow(r).GetCell(6).SafeTrim();
-                    prModel.Study = sheet.GetRow(r).GetCell(7).SafeTrim();
-                    prModel.Remark = sheet.GetRow(r).GetCell(8).SafeTrim();
-
-                    /*Console.WriteLine(string.Format("{0} {1} {2} {3} {4} {5} {6} {7} {8}", prModel.Name, prModel.Team,
-                        prModel.Type, prModel.Distribution, prModel.Video, prModel.Hour, prModel.Review, prModel.Study, prModel.Remark));*/
-                    preachReportModels.Add(prModel);
-                    //Console.WriteLine("\n");
+                    PreachReportModel prModel = prModels.FirstOrDefault(x => x.Name==tempName);
+                    if (prModel != null)
+                    {
+                        prModel.Distribution = sheet.GetRow(r).GetCell(3).SafeTrim();
+                        prModel.Video = sheet.GetRow(r).GetCell(4).SafeTrim();
+                        prModel.Hour = sheet.GetRow(r).GetCell(5).SafeTrim();
+                        prModel.Review = sheet.GetRow(r).GetCell(6).SafeTrim();
+                        prModel.Study = sheet.GetRow(r).GetCell(7).SafeTrim();
+                        prModel.Remark = sheet.GetRow(r).GetCell(8).SafeTrim();
+                        Console.WriteLine($"{prModel.Name}, {prModel.Team}, {prModel.Type}, {prModel.Distribution}, {prModel.Video}, {prModel.Hour},"
+                            + $"{prModel.Review}, {prModel.Study}, {prModel.Remark}\n");
+                    }
                 }
             }
             workbook.Close();
-            return preachReportModels;
+            return prModels;
         }
 
-        private string ChkTeam(string team, string lastTeam)
+        //先從資料夾結構讀取所有人的名字、所屬小組、傳道員類別
+        private List<PreachReportModel> GetEveryoneBasicData()
         {
-            if (!string.IsNullOrEmpty(team))
+            var rootFolder = config.GetValue<string>("TargetRootFolder");
+            var firstLayerFolder = Directory.GetDirectories(rootFolder)[0];
+            var teams = Directory.GetDirectories(firstLayerFolder).Where(x => x != config.GetValue<string>("WholeCongregationFolder"));
+            List<PreachReportModel> prModels = new List<PreachReportModel>();
+            //小組資料夾
+            foreach (var team in teams)
             {
-                string[] teamArr = config.GetSection("Teams").Get<string[]>();
-                if (teamArr.Contains(team))
+                //先驅與傳道員資料夾
+                var preacherTypes = Directory.GetDirectories(team);
+                foreach (var pType in preacherTypes)
                 {
-                    return team;
+                    //各傳道員資料夾
+                    var persons = Directory.GetDirectories(pType);
+                    foreach (var person in persons)
+                    {
+                        PreachReportModel model = new PreachReportModel
+                        {
+                            Name = Path.GetFileName(person),
+                            Type = Path.GetFileName(pType),
+                            Team = Path.GetFileName(team)
+                        };
+                        prModels.Add(model);
+                    }
                 }
             }
-            return lastTeam;
+            return prModels;
         }
 
+        //寫入每個人的PDF
         private void WriteToEveryonePdf(List<PreachReportModel> prModels, InputModel input)
         {
             foreach (var prModel in prModels)
@@ -162,6 +175,7 @@ namespace SmallTool.Lib.Services
             return "";
         }
 
+        //寫入PDF各欄位
         private void SetPdfFields(PdfDocument pdfDoc, IDictionary<string, PdfFormField> fields, PreachReportModel prModel, InputModel input)
         {
             int pageNum = 0;
