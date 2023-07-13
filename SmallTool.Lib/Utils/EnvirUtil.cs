@@ -44,8 +44,8 @@ namespace SmallTool.Lib.Utils
 
         public IConfiguration ReadAppSetting()
         {
+            //讀取環境設定，讀不同的appsettings
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
             return new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environmentName}.json", true, true)
