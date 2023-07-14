@@ -23,13 +23,16 @@ namespace SmallTool.Lib.Services
 
         public void Start(InputModel input)
         {
-            Console.WriteLine("CongregationPreachReportService Start!\n\n");
+            Console.WriteLine("\n##### CongregationPreachReportService Start! #####\n");
+            Console.WriteLine("##### 確認全會眾傳道報告檔案 #####\n");
             string congregationXls = GetCongregationXls(input.Year);
+            Console.WriteLine("##### 讀取所有人的報告 #####\n");
             List<PreachReportModel> preachReportModels = ReadAllPreachReport(congregationXls, input.Month);
+            Console.WriteLine("##### 開始寫入PDF #####\n");
             WriteToEveryonePdf(preachReportModels, input);
         }
 
-        //取得全會眾傳道報告檔案
+        //確認全會眾傳道報告檔案
         private string GetCongregationXls(string year)
         {
             var rootFolder = config.GetValue<string>("TargetRootFolder");
@@ -37,7 +40,7 @@ namespace SmallTool.Lib.Services
             var wholeCongregationFolder = config.GetValue<string>("WholeCongregationFolder");
             var yearFolder = Directory.GetDirectories(System.IO.Path.Combine(new string[] { firstLayerFolder, wholeCongregationFolder })).FirstOrDefault(x => x.Contains(year));
             var xls = Directory.GetFiles(yearFolder).Where(f => f.EndsWith(".xls") || f.EndsWith(".xlsx")).FirstOrDefault();
-            Console.WriteLine($"全會眾傳道報告檔案: {xls}");
+            Console.WriteLine($"全會眾傳道報告檔案: {xls}\n");
             return xls;
         }
 
@@ -50,12 +53,12 @@ namespace SmallTool.Lib.Services
             stream.Position = 0;
             if (stream.Name.ToLower().EndsWith(".xlsx"))
             {
-                Console.WriteLine("Excel type: xlsx XSSFWorkbook");
+                Console.WriteLine("Excel type: xlsx XSSFWorkbook\n");
                 workbook = new XSSFWorkbook(stream);
             }
             else
             {
-                Console.WriteLine("Excel type: xls HSSFWorkbook");
+                Console.WriteLine("Excel type: xls HSSFWorkbook\n");
                 workbook = new HSSFWorkbook(stream);
             }
             ISheet sheet = workbook.GetSheet(month + "月");
@@ -76,8 +79,8 @@ namespace SmallTool.Lib.Services
                         prModel.Review = sheet.GetRow(r).GetCell(6).SafeTrim();
                         prModel.Study = sheet.GetRow(r).GetCell(7).SafeTrim();
                         prModel.Remark = sheet.GetRow(r).GetCell(8).SafeTrim();
-                        Console.WriteLine($"{prModel.Name}, {prModel.Team}, {prModel.Type}, {prModel.Distribution}, {prModel.Video}, {prModel.Hour},"
-                            + $"{prModel.Review}, {prModel.Study}, {prModel.Remark}\n");
+                        //Console.WriteLine($"{prModel.Name}, {prModel.Team}, {prModel.Type}, {prModel.Distribution}, {prModel.Video}, {prModel.Hour}, "
+                        //    + $"{prModel.Review}, {prModel.Study}, {prModel.Remark}\n");
                     }
                 }
             }
@@ -138,7 +141,7 @@ namespace SmallTool.Lib.Services
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(prModel.Name + " 的作業發生錯誤，" + ex.ToString());
+                        Console.WriteLine($"{prModel.Name} 的作業發生錯誤， {ex.ToString()}\n");
                         pdfDoc.Close();
                         fs.Close();
                         DelTempPdf(pdfPath);

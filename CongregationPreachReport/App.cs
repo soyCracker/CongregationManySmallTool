@@ -1,13 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SmallTool.Lib.Models.CongregationPreachReport;
 using SmallTool.Lib.Services;
-using SmallTool.Lib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CongregationPreachReport
 {
@@ -15,7 +8,6 @@ namespace CongregationPreachReport
     {
         private readonly IConfiguration config;
         private readonly CongregationPreachReportService cprService;
-        private readonly string version = "1.1";
 
         public App(IConfiguration config, CongregationPreachReportService cprService)
         {
@@ -25,9 +17,9 @@ namespace CongregationPreachReport
 
         public void Run()
         {
-            Console.WriteLine($"CongregationPreachReport V{version}");
-            Console.WriteLine("ReleaseMode: " + config.GetValue<bool>("ReleaseMode"));
-            Console.WriteLine("Directory: " + Directory.GetCurrentDirectory());
+            Console.WriteLine($"CPR 會眾傳道報告程式 V{config.GetValue<string>("Version")}");
+            Console.WriteLine($"ReleaseMode 正式模式: {config.GetValue<bool>("ReleaseMode")}");
+            Console.WriteLine($"Directory 檔案目錄: {Directory.GetCurrentDirectory()}");
 
             InputModel inputModel = new InputModel();
             Console.Write("輸入目標西元年份: ");
