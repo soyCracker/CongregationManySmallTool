@@ -9,6 +9,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SmallTool.Lib.Models.CongregationPreachReport;
 using SmallTool.Lib.Utils;
+using System.Text.RegularExpressions;
 
 namespace SmallTool.Lib.Services
 {
@@ -39,7 +40,8 @@ namespace SmallTool.Lib.Services
             var firstLayerFolder = Directory.GetDirectories(rootFolder)[0];
             var wholeCongregationFolder = config.GetValue<string>("WholeCongregationFolder");
             var yearFolder = Directory.GetDirectories(System.IO.Path.Combine(new string[] { firstLayerFolder, wholeCongregationFolder })).FirstOrDefault(x => x.Contains(year));
-            var xls = Directory.GetFiles(yearFolder).Where(f => f.EndsWith(".xls") || f.EndsWith(".xlsx")).FirstOrDefault();
+            //稍微避免奇怪的檔案
+            var xls = Directory.GetFiles(yearFolder).Where(f => !System.IO.Path.GetFileName(f).StartsWith(".") && (f.EndsWith(".xls") || f.EndsWith(".xlsx"))).FirstOrDefault();
             Console.WriteLine($"全會眾傳道報告檔案: {xls}\n");
             return xls;
         }
@@ -79,8 +81,8 @@ namespace SmallTool.Lib.Services
                         prModel.Review = sheet.GetRow(r).GetCell(6).SafeTrim();
                         prModel.Study = sheet.GetRow(r).GetCell(7).SafeTrim();
                         prModel.Remark = sheet.GetRow(r).GetCell(8).SafeTrim();
-                        //Console.WriteLine($"{prModel.Name}, {prModel.Team}, {prModel.Type}, {prModel.Distribution}, {prModel.Video}, {prModel.Hour}, "
-                        //    + $"{prModel.Review}, {prModel.Study}, {prModel.Remark}\n");
+                        Console.WriteLine($"{prModel.Name}, {prModel.Team}, {prModel.Type}, {prModel.Distribution}, {prModel.Video}, {prModel.Hour}, "
+                            + $"{prModel.Review}, {prModel.Study}, {prModel.Remark}");
                     }
                 }
             }
@@ -165,17 +167,35 @@ namespace SmallTool.Lib.Services
             var pdfFolder = System.IO.Path.Combine(firstLayerFolder, prModel.Team, prModel.Type, prModel.Name);
             if (Directory.Exists(pdfFolder))
             {
-                var pdf = Directory.GetFiles(pdfFolder).Where(x => x.EndsWith(".pdf") && System.IO.Path.GetFileName(x).Length==11
-                            && x.Contains(year.Substring(2, 2))).Max();
+                DelAllDelMePdf(pdfFolder);
+                //盡量去除奇怪的檔案名稱
+                string pattern = "[0-9]{4}-[0-9]{2}.[Pp][Dd][Ff]";
+                Regex regex = new Regex(pattern);
+                var pdf = Directory.GetFiles(pdfFolder).Where(x => regex.IsMatch(System.IO.Path.GetFileName(x))
+                            && System.IO.Path.GetFileName(x).Length==11
+                            //包含年份後2碼，比如2023=>23
+                            && System.IO.Path.GetFileName(x).Substring(2).Contains(year.Substring(2, 2))).Max();
                 if (!string.IsNullOrEmpty(pdf))
                 {
-                    Console.WriteLine(".");
-                    //Console.WriteLine(pdf);
+                    Console.WriteLine($"{prModel.Name} {System.IO.Path.GetFileName(pdf)}");
                     return pdf;
                 }
             }
-            Console.WriteLine($"{prModel.Team} {prModel.Type} {prModel.Name} 的PDF名稱怪怪的會跳過");
+            Console.WriteLine($"##### {prModel.Team} {prModel.Type} {prModel.Name} 的PDF名稱怪怪的會跳過 #####");
             return "";
+        }
+
+        private void DelAllDelMePdf(string pdfFolder)
+        {
+            var delmes = Directory.GetFiles(pdfFolder).Where(x => System.IO.Path.GetFileName(x).Contains(config.GetValue<string>("TempPdfStr")));
+            foreach (var delme in delmes)
+            {
+                try
+                {
+                    File.Delete(delme);
+                }
+                catch (Exception) { }
+            }
         }
 
         //寫入PDF各欄位
