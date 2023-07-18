@@ -5,6 +5,9 @@
 
 # My file
 CongregationPreachReport/File/
+DelegationTool/File/Assignment/
+DelegationTool/File/DelegationForm/
+DelegationTool/Export/
 
 # User-specific files
 *.rsuser

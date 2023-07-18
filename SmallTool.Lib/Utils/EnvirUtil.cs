@@ -10,7 +10,7 @@ namespace SmallTool.Lib.Utils
             if (!releaseMode)
             {
                 Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "../../../../");
-                //Console.WriteLine("work dir:" + Directory.GetCurrentDirectory() + "\n");
+                Console.WriteLine("work dir:" + Directory.GetCurrentDirectory() + "\n");
             }
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Console.OutputEncoding = Encoding.UTF8;
