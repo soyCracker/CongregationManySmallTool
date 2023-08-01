@@ -5,7 +5,12 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!--IncludeAllContentForSelfExtract 單一檔案加這行才不會出錯-->
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <!--
+    單一檔案壓縮
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +30,7 @@
     </None>
     <None Update="File\檔案放在這個資料夾.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <!--ExcludeFromSingleFile 單一檔案排除這個項目-->
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <None Update="Font\TaipeiSansTCBeta-Regular.ttf">

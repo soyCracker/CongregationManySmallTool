@@ -1,0 +1,85 @@
+﻿@using SmallTool.Lib.Services;
+@using CPR_Maui_App.ViewModels;
+@using System.Threading;
+
+@inject IndexViewModel indexVM;
+
+@implements IDisposable;
+
+
+@page "/"
+
+<PageTitle>首頁</PageTitle>
+
+@if(indexVM.IndexModel.Step == 0)
+{
+    <MudPaper Class="pa-16 ma-2" Elevation="3" MaxWidth="50%">
+        <EditForm EditContext="indexVM.timeEditContext">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <MudTextField T="string" HelperText="請輸入年月" InputType="InputType.Month" ValueChanged="ValChangeDate" />
+            <ValidationMessage For="@(() => indexVM.IndexModel)" />
+            @*<MudText Typo="Typo.h5">@temp</MudText>*@
+
+            <br>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnClickGoSelectFolder">確認</MudButton>
+        </EditForm>
+    </MudPaper>
+}
+else if (indexVM.IndexModel.Step == 1)
+{
+    <MudPaper Class="pa-16 ma-2" Elevation="3">
+        <MudText Typo="Typo.h5">@indexVM.IndexModel.Year 年 @indexVM.IndexModel.Month 月</MudText>
+        <br>
+        <MudText Typo="Typo.h6">選擇資料夾路徑: @indexVM.IndexModel.RootFolder </MudText>
+        <br>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="OnClickSelectFolder">選擇會眾報告資料夾</MudButton>
+        @if (!string.IsNullOrEmpty(@indexVM.IndexModel.RootFolder))
+        {
+            <br>
+            <br>
+            <br>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnClickStart">確認開始</MudButton>
+        }
+    </MudPaper>
+}
+else if(indexVM.IndexModel.Step == 2)
+{
+    <MudPaper Class="pa-16 ma-2" Elevation="3">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+    </MudPaper>
+}
+
+
+@code{
+
+    private string temp { get; set; }
+    private CancellationTokenSource cancellationToken = new CancellationTokenSource();
+
+    private async Task OnClickSelectFolder()
+    {
+        await indexVM.SelectFolder(cancellationToken.Token);
+    }
+
+    private void ValChangeDate(string val)
+    {
+        indexVM.SetInputYearAndMonth(val);
+    }
+
+    private void OnClickGoSelectFolder()
+    {
+        indexVM.GoSelectFolder();
+    }
+
+    private async Task OnClickStart()
+    {
+        await indexVM.Start();
+    }
+
+    public void Dispose()
+    {
+        cancellationToken?.Cancel();
+        cancellationToken?.Dispose();
+    }
+}

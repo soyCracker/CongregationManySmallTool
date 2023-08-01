@@ -1,0 +1,76 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>會眾傳道報告</PageTitle>
+
+<MudThemeProvider Theme="@MyCustomTheme" @bind-IsDarkMode="@isDarkMode" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => ToggleNavMenu())" />
+        <MudSpacer />
+        <MudIconButton Icon="@lighOrDarkIcon" Color="Color.Inherit" OnClick="@ToggleDarkMode" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">會眾傳道報告</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+    public bool isDarkMode = false;
+    private string lighOrDarkIcon = Icons.Material.Filled.LightMode;
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Typography = new Typography()
+            {
+                Default = new Default()
+                {
+                    FontFamily = new[] { "Noto Sans TC", "微軟正黑體", "sans-serif" }
+                }
+            },
+
+            //Material Design 3
+            //https://m3.material.io/theme-builder#/custom
+            Palette = new PaletteLight()
+            {
+                Primary = "#bef4ff",
+                PrimaryContrastText = "#001f24",
+                Secondary = "#576490",
+                SecondaryContrastText = "#fbfcfd",
+                AppbarBackground = "#bef4ff",
+                AppbarText = "#001f24",
+                Background = "#fbfcfd",
+                White = "#fbfcfd",
+                Tertiary = "#8690b2",
+                Surface = "#fbfcfd",
+                Warning = "#d14081"
+            },
+
+            LayoutProperties = new LayoutProperties()
+            {
+                DrawerWidthLeft = "260px",
+                DrawerWidthRight = "300px"
+            }
+        };
+
+    private void ToggleNavMenu()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void ToggleDarkMode()
+    {
+        isDarkMode = !isDarkMode;
+        lighOrDarkIcon = isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode;
+    }
+}

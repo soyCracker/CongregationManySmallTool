@@ -5,8 +5,8 @@
 
 # My file
 CongregationPreachReport/File/
-DelegationTool/File/Assignment/
-DelegationTool/File/DelegationForm/
+DelegationTool/File/Assignment/*.xlsx
+DelegationTool/File/DelegationForm/*.xlsx
 DelegationTool/Export/
 
 # User-specific files
