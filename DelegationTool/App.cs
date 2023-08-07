@@ -39,7 +39,8 @@ namespace DelegationTool
 
         private void FucDescOutput()
         {
-            Console.WriteLine("Release Mode: " + config.GetValue<bool>("ReleaseMode"));
+            Console.WriteLine($"DelegationTool 委派單程式 V{config.GetValue<string>("Version")}");
+            Console.WriteLine($"Release Mode: {config.GetValue<bool>("ReleaseMode")}");
             Console.WriteLine("Delegation Console Tool 功能:");
             Console.WriteLine("委派紀錄填寫 - 1");
             Console.WriteLine("輸出委派單 - 3");
