@@ -69,6 +69,7 @@ namespace SmallTool.Lib.Services
             int startRow = config.GetValue<int>("CongregationXlsStartRow");
             for (int r = startRow; r<sheet.LastRowNum; r++)
             {
+                //Console.WriteLine($"LOG R:{r}");
                 string tempName = sheet.GetRow(r).GetCell(2).SafeTrim();
                 if (!string.IsNullOrEmpty(tempName))
                 {

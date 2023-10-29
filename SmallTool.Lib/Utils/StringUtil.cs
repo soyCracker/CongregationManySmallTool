@@ -15,6 +15,10 @@ namespace SmallTool.Lib.Utils
 
         public static string SafeTrim(this ICell cell)
         {
+            if (cell==null)
+            {
+                return "";
+            }
             var str = cell.ToString();
             if (string.IsNullOrEmpty(str))
             {
