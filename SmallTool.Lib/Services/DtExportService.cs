@@ -168,17 +168,17 @@ namespace SmallTool.Lib.Services
                 //我她X的，SetFont要在SetValue之前
                 Console.WriteLine("學生:" + delegation.Name + "\n");
                 //pdfService.SetPdfFeldValueCenter(fields, pdfDoc, S89PdfField.Name2, delegation.Name);
-                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Name, 100, 270);
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Name, 80, 270);
 
                 Console.WriteLine("助手:" + delegation.Assistant + "\n");
                 //pdfService.SetPdfFeldValueCenter(fields, pdfDoc, S89PdfField.Ass2, delegation.Assistant);
-                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Assistant, 100, 245);
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Assistant, 80, 245);
 
                 //日期
-                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Date, 100, 220);
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Date, 80, 220);
 
                 //題目
-                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Header, 100, 190);
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Header, 80, 190);
             }
             else
             {

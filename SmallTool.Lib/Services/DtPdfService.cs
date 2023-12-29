@@ -61,7 +61,7 @@ namespace SmallTool.Lib.Services
             //Rectangle rectangle = annotation.GetRectangle().ToRectangle();
             Canvas canvas = new Canvas(page, page.GetPageSize());
             // 設定字體、粗體
-            Paragraph p = new Paragraph(content).SetFont(GetMyFont()).SetBold();
+            Paragraph p = new Paragraph(content).SetFont(GetMyFont());
             p.SetFixedPosition(left, bottom, page.GetPageSize().GetWidth());
             canvas.Add(p);
             canvas.Close();
