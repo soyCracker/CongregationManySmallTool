@@ -30,12 +30,6 @@ namespace SmallTool.Lib.Services
             return Process(fs, s89chFile, s89jpFile, descStr, descJPStr, JPFlagStr);
         }
 
-        public Dictionary<string, byte[]> Start(FileStream fs, string s89chFile, string s89jpFile,
-            string descStr, string descJPStr, string JPFlagStr)
-        {
-            return Process(fs, s89chFile, s89jpFile, descStr, descJPStr, JPFlagStr);
-        }
-
         private Dictionary<string, byte[]> Process(FileStream stream, string s89chFile, string s89jpFile,
             string descStr, string descJPStr, string JPFlagStr)
         {
@@ -97,16 +91,16 @@ namespace SmallTool.Lib.Services
             try
             {
                 DelegationVM vm = new DelegationVM();
-                vm.Name = sheet.GetRow(rowNum).GetCell(2 + (classInt - 1) * 2).ToString();
+                vm.Name = sheet.GetRow(rowNum).GetCell(2 + (classInt - 1) * 2).SafeTrim();
                 if (string.IsNullOrEmpty(vm.Name))
                 {
                     return null;
                 }
 
-                vm.Assistant = sheet.GetRow(rowNum).GetCell(3 + (classInt - 1) * 2).ToString();
-                vm.Header = StringUtil.GetChinesePrintAble(sheet.GetRow(rowNum).GetCell(1).ToString());
+                vm.Assistant = sheet.GetRow(rowNum).GetCell(3 + (classInt - 1) * 2).SafeTrim();
+                vm.Header = StringUtil.GetChinesePrintAble(sheet.GetRow(rowNum).GetCell(1).SafeTrim());
                 vm.Class = classInt.ToString();
-                vm.Date = sheet.GetRow(rowNum).GetCell(0).ToString();
+                vm.Date = sheet.GetRow(rowNum).GetCell(0).SafeTrim();
 
                 if (string.IsNullOrEmpty(vm.Date))
                 {
@@ -173,114 +167,22 @@ namespace SmallTool.Lib.Services
             {
                 //我她X的，SetFont要在SetValue之前
                 Console.WriteLine("學生:" + delegation.Name + "\n");
-                pdfService.SetPdfFeldValueCenter(fields, pdfDoc, S89PdfField.Name, delegation.Name);
+                //pdfService.SetPdfFeldValueCenter(fields, pdfDoc, S89PdfField.Name2, delegation.Name);
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Name, 100, 270);
 
                 Console.WriteLine("助手:" + delegation.Assistant + "\n");
-                pdfService.SetPdfFeldValueCenter(fields, pdfDoc, S89PdfField.Ass, delegation.Assistant);
+                //pdfService.SetPdfFeldValueCenter(fields, pdfDoc, S89PdfField.Ass2, delegation.Assistant);
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Assistant, 100, 245);
 
-                SetPdfFieldDelegationName(fields, delegation, pdfDoc);
+                //日期
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Date, 100, 220);
 
-                /*Console.WriteLine("日期:" + delegation.Date + "-" + delegation.Delegation + "\n");
-                PdfUtil.SetPdfFeldValueSmall(fields, pdfDoc, S89PdfField.Date, delegation.Date + "-" + delegation.Delegation);*/
-
-                SetPdfFieldDelegationCell(fields, delegation, pdfDoc);
-
-                SetPdfFieldClass(fields, delegation, pdfDoc);
+                //題目
+                pdfService.SetPdfFeldValueCenter(pdfDoc, delegation.Header, 100, 190);
             }
             else
             {
                 throw new NoFontException();
-            }
-        }
-
-        private void SetPdfFieldDelegationName(IDictionary<string, PdfFormField> fields, DelegationVM delegation,
-            PdfDocument pdfDoc)
-        {
-            if (delegation.Date.Equals(lastDate) && delegation.Header.Contains(lastDelagation))
-            {
-                sameDelegationCount++;
-                Console.WriteLine("日期:" + delegation.Date + "-" + delegation.Header.Replace(lastDelagation, lastDelagation + sameDelegationCount) + "\n");
-                pdfService.SetPdfFeldValueSmall(fields, pdfDoc, S89PdfField.Date, delegation.Date + "-" +
-                    delegation.Header.Replace(lastDelagation, lastDelagation + sameDelegationCount));
-            }
-            else
-            {
-                sameDelegationCount = 1;
-                Console.WriteLine("日期:" + delegation.Date + "-" + delegation.Header + "\n");
-                pdfService.SetPdfFeldValueSmall(fields, pdfDoc, S89PdfField.Date, delegation.Date + "-" +
-                    delegation.Header);
-            }
-            lastDate = delegation.Date;
-        }
-
-        private void SetPdfFieldDelegationCell(IDictionary<string, PdfFormField> fields, DelegationVM delegation,
-            PdfDocument pdfDoc)
-        {
-            Console.WriteLine("委派:" + delegation.Header + "\n");
-            if (delegation.Header.Contains(DelegationTypeName.Reading))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.Reading);
-                lastDelagation = DelegationTypeName.Reading;
-            }
-            else if (delegation.Header.Contains(DelegationTypeName.InitialCall))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.InitialCall);
-                lastDelagation = DelegationTypeName.InitialCall;
-            }
-            else if (delegation.Header.Contains(DelegationTypeName.FirstRV))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.FirstRV);
-                lastDelagation = DelegationTypeName.FirstRV;
-            }
-            else if (delegation.Header.Contains(DelegationTypeName.SecondRV))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.SecondRV);
-                lastDelagation = DelegationTypeName.SecondRV;
-            }
-            else if (delegation.Header.Contains(DelegationTypeName.BibleStudy))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.BibleStudy);
-                lastDelagation = DelegationTypeName.BibleStudy;
-            }
-            else if (delegation.Header.Contains(DelegationTypeName.BibleStudy2))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.BibleStudy);
-                lastDelagation = DelegationTypeName.BibleStudy2;
-            }
-            else if (delegation.Header.Contains(DelegationTypeName.Talk))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.Talk);
-                lastDelagation = DelegationTypeName.Talk;
-            }
-            //續訪需避免與第二次續訪衝突
-            else if (delegation.Header.Contains(DelegationTypeName.FirstRV2) &&
-                        !delegation.Header.Contains(DelegationTypeName.SecondRV))
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.FirstRV);
-                lastDelagation = DelegationTypeName.FirstRV2;
-            }
-            else
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.Other);
-                pdfService.SetPdfFeldValueSmall(fields, pdfDoc, S89PdfField.OtherText, delegation.Header.Split('(')[0]);
-            }
-        }
-
-        private void SetPdfFieldClass(IDictionary<string, PdfFormField> fields, DelegationVM delegation,
-            PdfDocument pdfDoc)
-        {
-            Console.WriteLine("班別:" + delegation.Class + "\n");
-            if (delegation.Class == "1")
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.Class1);
-            }
-            else if (delegation.Class == "2")
-            {
-                pdfService.SetPdfCheckBoxSelected(fields, pdfDoc, S89PdfField.Class2);
-            }
-            else
-            {
-                Console.WriteLine("班別填錯了吧\n");
             }
         }
     }

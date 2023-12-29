@@ -27,6 +27,14 @@ namespace DelegationTool
             delegationFormFolder = Path.Combine(config.GetValue<string>("FileFolder"), config.GetValue<string>("DelegationFormFolder"));
             assignmentFolder = Path.Combine(config.GetValue<string>("FileFolder"), config.GetValue<string>("AssignmentFolder"));
             s89chFile = Path.Combine(config.GetValue<string>("FileFolder"), config.GetValue<string>("S89CH"));
+            if (File.Exists(s89chFile))
+            {
+                Console.WriteLine("YESSSSSSSSSSSS");
+            }
+            else
+            {
+                Console.WriteLine("NOOOOOOOOOOOOOOO");
+            }
             s89jpFile = Path.Combine(config.GetValue<string>("FileFolder"), config.GetValue<string>("S89J"));
 
             while (true)

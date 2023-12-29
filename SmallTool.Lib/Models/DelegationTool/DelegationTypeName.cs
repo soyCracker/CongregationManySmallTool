@@ -1,14 +1,10 @@
-﻿namespace SmallTool.Lib.Models.DelegationTool
+﻿namespace SmallTool.Lib.Models.DelegationTool;
+
+public class DelegationTypeName
 {
-    public class DelegationTypeName
-    {
-        public static readonly string Reading = "經文朗讀";
-        public static readonly string InitialCall = "初次交談";
-        public static readonly string FirstRV = "第一次續訪";
-        public static readonly string FirstRV2 = "續訪";
-        public static readonly string SecondRV = "第二次續訪";
-        public static readonly string BibleStudy = "聖經研究";
-        public static readonly string BibleStudy2 = "聖經討論";
-        public static readonly string Talk = "演講";
-    }
+    public static readonly string Reading = "經文朗讀";
+    public static readonly string InitialCall2 = "開始交談";
+    public static readonly string RV2 = "繼續幫助對方";
+    public static readonly string BibleStudy3 = "教導人成為門徒";
+    public static readonly string Talk = "演講";
 }

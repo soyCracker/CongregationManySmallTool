@@ -24,6 +24,7 @@ namespace SmallTool.Lib.Services
 
             using FileStream assignFileFs = new FileStream(assignFile, FileMode.Open);
             using MemoryStream assignFileMs = new MemoryStream();
+            assignFileFs.CopyTo(assignFileMs);
             return Record(vmList, assignFileMs);
         }
 
@@ -195,15 +196,15 @@ namespace SmallTool.Lib.Services
                     }
                     row.GetCell(1).SetCellValue(TimeUtil.CovertDateToFileNameStr(vm.Date));
                     string type = "X";
-                    if (vm.Header.Contains(DelegationTypeName.InitialCall))
+                    if (vm.Header.Contains(DelegationTypeName.InitialCall2))
                     {
                         type = "初";
                     }
-                    else if (vm.Header.Contains(DelegationTypeName.FirstRV) || vm.Header.Contains(DelegationTypeName.FirstRV2) || vm.Header.Contains(DelegationTypeName.SecondRV))
+                    else if (vm.Header.Contains(DelegationTypeName.RV2))
                     {
                         type = "續";
                     }
-                    else if (vm.Header.Contains(DelegationTypeName.BibleStudy) || vm.Header.Contains(DelegationTypeName.BibleStudy2))
+                    else if (vm.Header.Contains(DelegationTypeName.BibleStudy3))
                     {
                         type = "課";
                     }
