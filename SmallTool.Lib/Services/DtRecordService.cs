@@ -72,7 +72,7 @@ namespace SmallTool.Lib.Services
             DelegationVM vm = new DelegationVM();
             try
             {
-                vm.Name = sheet.GetRow(rowNum).GetCell(2 + (classInt - 1) * 2).ToString().Trim();
+                vm.Name = sheet.GetRow(rowNum).GetCell(2 + (classInt - 1) * 2).SafeTrim();
                 if (string.IsNullOrEmpty(vm.Name))
                 {
                     return;
@@ -85,17 +85,17 @@ namespace SmallTool.Lib.Services
             }
             try
             {
-                vm.Assistant = sheet.GetRow(rowNum).GetCell(3 + (classInt - 1) * 2).ToString();
+                vm.Assistant = sheet.GetRow(rowNum).GetCell(3 + (classInt - 1) * 2).SafeTrim();
             }
             catch (Exception)
             {
                 vm.Assistant = "";
             }
-            vm.Header = StringUtil.GetChinesePrintAble(sheet.GetRow(rowNum).GetCell(1).ToString());
+            vm.Header = StringUtil.GetChinesePrintAble(sheet.GetRow(rowNum).GetCell(1).SafeTrim());
             vm.Class = classInt.ToString();
             try
             {
-                vm.Date = sheet.GetRow(rowNum).GetCell(0).ToString();
+                vm.Date = sheet.GetRow(rowNum).GetCell(0).SafeTrim();
                 if (string.IsNullOrEmpty(vm.Date))
                 {
                     vm.Date = blockDate;
@@ -166,7 +166,7 @@ namespace SmallTool.Lib.Services
             for (int i = 2; i <= broSheet.LastRowNum; i++)
             {
                 var row = broSheet.GetRow(i);
-                if (row.GetCell(typeCol) != null && row.GetCell(typeCol).ToString().Trim() == vm.Name)
+                if (row.GetCell(typeCol) != null && row.GetCell(typeCol).SafeTrim() == vm.Name)
                 {
                     //順便整理一下string
                     row.GetCell(typeCol).SetCellValue(vm.Name);
@@ -186,7 +186,7 @@ namespace SmallTool.Lib.Services
             for (int i = 1; i <= sisSheet.LastRowNum; i++)
             {
                 var row = sisSheet.GetRow(i);
-                if (row.GetCell(0) != null && row.GetCell(0).ToString().Trim() == vm.Name)
+                if (row.GetCell(0) != null && row.GetCell(0).SafeTrim() == vm.Name)
                 {
                     //順便整理一下string
                     row.GetCell(0).SetCellValue(vm.Name);
@@ -204,7 +204,7 @@ namespace SmallTool.Lib.Services
                     {
                         type = "續";
                     }
-                    else if (vm.Header.Contains(DelegationTypeName.BibleStudy3))
+                    else if (vm.Header.Contains(DelegationTypeName.BibleStudy3) || vm.Header.Contains(DelegationTypeName.Other1))
                     {
                         type = "課";
                     }
@@ -225,7 +225,7 @@ namespace SmallTool.Lib.Services
             for (int i = 1; i <= assSheet.LastRowNum; i++)
             {
                 var row = assSheet.GetRow(i);
-                if (row.GetCell(0) != null && row.GetCell(0).ToString().Trim() == vm.Assistant)
+                if (row.GetCell(0) != null && row.GetCell(0).SafeTrim() == vm.Assistant)
                 {
                     //順便整理一下string
                     row.GetCell(0).SetCellValue(vm.Assistant);
